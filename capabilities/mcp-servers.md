@@ -12,8 +12,8 @@ MCP Servers 是 Claude Code 访问外部数据的主要方式。每个 MCP Serve
 
 | MCP Server | 用途 | 典型场景 |
 |-----------|------|---------|
-| **bytebase** | 数据库查询 | SQL 查询、数据分析 |
-| **honeycomb** | 可观测性 | Traces、监控、性能分析 |
+| **database** | 数据库查询 | SQL 查询、数据分析 |
+| **observability** | 可观测性 | Traces、监控、性能分析 |
 | **chart** | 图表生成 | 数据可视化 |
 | **playwright** | 浏览器自动化 | E2E 测试、截图 |
 | **stripe** | 支付集成 | 支付流程、订阅管理 |
@@ -23,7 +23,7 @@ MCP Servers 是 Claude Code 访问外部数据的主要方式。每个 MCP Serve
 
 ---
 
-## Bytebase MCP（数据库）
+## Database MCP（数据库）
 
 ### 功能列表
 
@@ -36,7 +36,7 @@ MCP Servers 是 Claude Code 访问外部数据的主要方式。每个 MCP Serve
 
 ```javascript
 // 执行 SQL 查询
-mcp__mcphub__bytebase-execute_sql({
+database_execute_sql({
   sql: `
     WITH recent_orders AS (
       SELECT user_id, SUM(total) as total_spent
@@ -53,7 +53,7 @@ mcp__mcphub__bytebase-execute_sql({
 });
 
 // 搜索数据库对象
-mcp__mcphub__bytebase-search_objects({
+database_search_objects({
   object_type: 'table',
   pattern: 'user%',
   detail_level: 'summary'
@@ -68,7 +68,7 @@ mcp__mcphub__bytebase-search_objects({
 
 ---
 
-## Honeycomb MCP（可观测性）
+## Observability MCP（可观测性）
 
 ### 功能列表
 
@@ -85,7 +85,7 @@ mcp__mcphub__bytebase-search_objects({
 
 ```javascript
 // 查询 API 延迟 P95
-mcp__mcphub__honeycomb-run_query({
+observability_run_query({
   environment_slug: 'production',
   dataset_slug: 'api-logs',
   query_spec: {
@@ -102,7 +102,7 @@ mcp__mcphub__honeycomb-run_query({
 });
 
 // 获取特定 trace
-mcp__mcphub__honeycomb-get_trace({
+observability_get_trace({
   environment_slug: 'production',
   trace_id: 'abc123def456'
 });
@@ -146,7 +146,7 @@ mcp__mcphub__honeycomb-get_trace({
 
 ```javascript
 // 折线图：收入趋势
-mcp__mcphub__mcp-server-chart-generate_line_chart({
+chart_generate_line_chart({
   data: [
     { time: '2026-01', value: 10000 },
     { time: '2026-02', value: 12000 },
@@ -160,7 +160,7 @@ mcp__mcphub__mcp-server-chart-generate_line_chart({
 });
 
 // 柱状图：分类对比
-mcp__mcphub__mcp-server-chart-generate_bar_chart({
+chart_generate_bar_chart({
   data: [
     { category: '产品A', value: 100 },
     { category: '产品B', value: 150 },
@@ -172,7 +172,7 @@ mcp__mcphub__mcp-server-chart-generate_bar_chart({
 });
 
 // 饼图：市场份额
-mcp__mcphub__mcp-server-chart-generate_pie_chart({
+chart_generate_pie_chart({
   data: [
     { category: '市场A', value: 45 },
     { category: '市场B', value: 30 },
@@ -183,7 +183,7 @@ mcp__mcphub__mcp-server-chart-generate_pie_chart({
 });
 
 // 漏斗图：转化率
-mcp__mcphub__mcp-server-chart-generate_funnel_chart({
+chart_generate_funnel_chart({
   data: [
     { category: '访问', value: 10000 },
     { category: '注册', value: 3000 },
@@ -238,28 +238,28 @@ mcp__mcphub__mcp-server-chart-generate_funnel_chart({
 
 ```javascript
 // 导航到页面
-mcp__plugin_playwright_playwright__browser_navigate({
+playwright_browser_navigate({
   url: 'https://example.com'
 });
 
 // 获取页面快照（用于了解页面结构）
-mcp__plugin_playwright_playwright__browser_snapshot({});
+playwright_browser_snapshot({});
 
 // 点击按钮
-mcp__plugin_playwright_playwright__browser_click({
+playwright_browser_click({
   element: 'Login button',
   ref: 'button[type="submit"]'
 });
 
 // 输入文本
-mcp__plugin_playwright_playwright__browser_type({
+playwright_browser_type({
   element: 'Email input',
   ref: 'input[name="email"]',
   text: 'user@example.com'
 });
 
 // 截图
-mcp__plugin_playwright_playwright__browser_take_screenshot({
+playwright_browser_take_screenshot({
   filename: 'homepage.png',
   fullPage: true
 });
@@ -283,16 +283,16 @@ mcp__plugin_playwright_playwright__browser_take_screenshot({
 
 ```javascript
 // 列出项目
-mcp__plugin_supabase_supabase__list_projects({});
+supabase_list_projects({});
 
 // 执行 SQL
-mcp__plugin_supabase_supabase__execute_sql({
+supabase_execute_sql({
   project_id: 'your-project-id',
   query: 'SELECT * FROM users LIMIT 10'
 });
 
 // 部署边缘函数
-mcp__plugin_supabase_supabase__deploy_edge_function({
+supabase_deploy_edge_function({
   project_id: 'your-project-id',
   name: 'hello-world',
   entrypoint_path: 'index.ts',
@@ -321,7 +321,7 @@ mcp__plugin_supabase_supabase__deploy_edge_function({
 ### 数据分析工作流
 
 ```
-bytebase 查询原始数据
+database 查询原始数据
     ↓
 本地数据处理（聚合、计算、过滤）
     ↓
@@ -333,11 +333,11 @@ content-writer 生成分析报告（可选）
 ### 调试优化工作流
 
 ```
-honeycomb 查询 traces/metrics
+observability 查询 traces/metrics
     ↓
 定位性能瓶颈
     ↓
-bytebase 查询相关数据
+database 查询相关数据
     ↓
 分析根因 → 修复问题
 ```
@@ -363,18 +363,18 @@ MCP Servers 通过 `~/.claude/settings.json` 配置：
 ```json
 {
   "mcpServers": {
-    "bytebase": {
+    "database": {
       "command": "node",
-      "args": ["path/to/bytebase-mcp"],
+      "args": ["path/to/database-mcp"],
       "env": {
-        "DATABASE_URL": "..."
+        "DATABASE_URL": "your-database-url"
       }
     },
-    "honeycomb": {
+    "observability": {
       "command": "node",
-      "args": ["path/to/honeycomb-mcp"],
+      "args": ["path/to/observability-mcp"],
       "env": {
-        "HONEYCOMB_API_KEY": "..."
+        "API_KEY": "your-api-key"
       }
     }
   }

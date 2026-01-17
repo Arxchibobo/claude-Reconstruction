@@ -9,7 +9,7 @@
 ```
 1️⃣ 需求理解 → 明确分析目标
         ↓
-2️⃣ 数据查询 → bytebase MCP 获取数据
+2️⃣ 数据查询 → database MCP 获取数据
         ↓
 3️⃣ 数据处理 → 清洗、聚合、计算
         ↓
@@ -45,11 +45,11 @@
 
 ## 阶段 2: 数据查询
 
-### 使用 Bytebase MCP
+### 使用 Database MCP
 
 ```javascript
 // 基础查询
-mcp__mcphub__bytebase-execute_sql({
+database_execute_sql({
   sql: `
     SELECT
       DATE(created_at) as date,
@@ -182,7 +182,7 @@ function movingAverage(data, window = 7) {
 
 ```javascript
 // 折线图：趋势分析
-mcp__mcphub__mcp-server-chart-generate_line_chart({
+chart_generate_line_chart({
   data: timeSeriesData.map(d => ({
     time: d.date,
     value: d.users,
@@ -196,7 +196,7 @@ mcp__mcphub__mcp-server-chart-generate_line_chart({
 });
 
 // 柱状图：分类对比
-mcp__mcphub__mcp-server-chart-generate_bar_chart({
+chart_generate_bar_chart({
   data: channelData.map(d => ({
     category: d.channel,
     value: d.users
@@ -207,7 +207,7 @@ mcp__mcphub__mcp-server-chart-generate_bar_chart({
 });
 
 // 饼图：占比分析
-mcp__mcphub__mcp-server-chart-generate_pie_chart({
+chart_generate_pie_chart({
   data: segmentData.map(d => ({
     category: d.segment,
     value: d.count

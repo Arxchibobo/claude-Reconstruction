@@ -45,15 +45,15 @@ const user = createUser({
 
 ```javascript
 // ❌ 错误：MCP 参数格式错误
-mcp__mcphub__bytebase-execute_sql('SELECT * FROM users');
+database_execute_sql('SELECT * FROM users');
 
 // ✅ 正确：使用正确的参数格式
-mcp__mcphub__bytebase-execute_sql({
+database_execute_sql({
   sql: 'SELECT * FROM users WHERE active = true'
 });
 
-// Honeycomb 查询
-mcp__mcphub__honeycomb-run_query({
+// Observability 查询
+observability_run_query({
   environment_slug: 'production',
   dataset_slug: 'api-logs',
   query_spec: {
@@ -84,7 +84,7 @@ mcp__mcphub__honeycomb-run_query({
 
 ```javascript
 // ❌ 错误：最小配置，缺少关键元素
-mcp__mcphub__mcp-server-chart-generate_line_chart({
+chart_generate_line_chart({
   data: [
     { time: '2026-01', value: 100 },
     { time: '2026-02', value: 150 }
@@ -92,7 +92,7 @@ mcp__mcphub__mcp-server-chart-generate_line_chart({
 });
 
 // ✅ 正确：完整配置
-mcp__mcphub__mcp-server-chart-generate_line_chart({
+chart_generate_line_chart({
   data: [
     { time: '2026-01', value: 100 },
     { time: '2026-02', value: 150 }
