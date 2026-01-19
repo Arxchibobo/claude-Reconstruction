@@ -1,0 +1,91 @@
+name: Test Installation
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-unix:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up permissions
+        run: |
+          chmod +x scripts/install.sh
+          chmod +x scripts/verify.sh
+
+      - name: Run installation
+        run: ./scripts/install.sh
+
+      - name: Verify installation
+        run: ./scripts/verify.sh
+
+      - name: Check installed files
+        run: |
+          echo "Checking installed files in ~/.claude/"
+          ls -la ~/.claude/
+          echo ""
+          echo "Core files:"
+          ls -la ~/.claude/*.md || true
+          echo ""
+          echo "Errors directory:"
+          ls -la ~/.claude/errors/ || true
+
+  test-windows:
+    name: Test on Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run installation (PowerShell)
+        shell: pwsh
+        run: |
+          .\scripts\install.ps1
+
+      - name: Check installed files
+        shell: pwsh
+        run: |
+          Write-Host "Checking installed files in ~/.claude/"
+          Get-ChildItem -Path "$env:USERPROFILE\.claude" -Recurse -Depth 1
+
+  markdown-lint:
+    name: Markdown Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Markdown Lint
+        uses: nosborn/github-action-markdown-cli@v3.3.0
+        with:
+          files: .
+          config_file: .markdownlint.json
+          ignore_files: node_modules/
+        continue-on-error: true
+
+  check-links:
+    name: Check Markdown Links
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check links in markdown files
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: 'yes'
+          check-modified-files-only: 'no'
+        continue-on-error: true

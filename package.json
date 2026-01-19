@@ -1,0 +1,61 @@
+{
+  "name": "@arxchibobo/claude-reconstruction",
+  "version": "4.0.0",
+  "description": "Claude Code Engineering Configuration System - A comprehensive collection of best practices, error catalogs, decision trees, and workflows for Claude Code",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "install": "bash scripts/install.sh",
+    "verify": "bash scripts/verify.sh",
+    "test": "bash scripts/verify.sh"
+  },
+  "keywords": [
+    "claude-code",
+    "ai",
+    "productivity",
+    "configuration",
+    "workflow",
+    "best-practices",
+    "error-handling",
+    "mcp",
+    "skills",
+    "plugins"
+  ],
+  "author": {
+    "name": "Arxchibobo",
+    "url": "https://github.com/Arxchibobo"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arxchibobo/claude-Reconstruction.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Arxchibobo/claude-Reconstruction/issues"
+  },
+  "homepage": "https://github.com/Arxchibobo/claude-Reconstruction#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "files": [
+    "core/",
+    "errors/",
+    "capabilities/",
+    "workflows/",
+    "learning/",
+    "references/",
+    "automation/",
+    "delegator/",
+    "scripts/",
+    "examples/",
+    "README.md",
+    "README.en.md",
+    "LICENSE",
+    "CONTRIBUTING.md"
+  ]
+}

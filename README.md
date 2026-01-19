@@ -3,6 +3,9 @@
 > **Claude Code 工程化配置系统** - 让每次会话都高效、稳定、可复现
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-4.0.0-blue.svg)](https://github.com/Arxchibobo/claude-Reconstruction)
+
+[English](README.en.md) | 简体中文
 
 ---
 
@@ -24,6 +27,17 @@ Claude Reconstruction 是一套经过实践验证的 **Claude Code 工程化配�
 | 不知道用哪个工具 | 决策树快速定位 |
 | 任务执行效率低 | 标准工作流程 |
 | 会话间知识丢失 | 持久化配置系统 |
+
+---
+
+## 系统要求
+
+| 要求 | 版本/说明 |
+|-----|---------|
+| **Claude Code** | >= 1.0.0 |
+| **操作系统** | macOS / Linux / Windows |
+| **Shell** | Bash (Unix/Linux/macOS) / PowerShell (Windows) |
+| **Node.js** | >= 14.0.0 (可选，用于 npm 安装) |
 
 ---
 
@@ -54,7 +68,17 @@ chmod +x scripts/install.sh
 
 ### 验证安装
 
-启动 Claude Code，你应该看到：
+运行验证脚本：
+
+```bash
+# Unix/Linux/macOS
+./scripts/verify.sh
+
+# Windows PowerShell
+.\scripts\verify.ps1
+```
+
+或启动 Claude Code，你应该看到：
 - 高频错误提醒
 - 快速决策树
 - 工作模式确认
