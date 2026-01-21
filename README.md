@@ -43,45 +43,45 @@ Claude Reconstruction 是一套经过实践验证的 **Claude Code 工程化配�
 
 ## 快速开始
 
-### 安装
+### 安装（两步搞定）
 
-**方式 1: 克隆仓库安装**
+**步骤 1: 克隆仓库**
 
 ```bash
-# 克隆仓库
 git clone https://github.com/Arxchibobo/claude-Reconstruction.git
 cd claude-Reconstruction
-
-# Unix/Linux/macOS
-chmod +x scripts/install.sh
-./scripts/install.sh
-
-# Windows PowerShell
-.\scripts\install.ps1
 ```
 
-**方式 2: 手动安装**
+**步骤 2: 让 Claude Code 自动安装**
 
-1. 下载仓库
-2. 复制 `core/` 目录下的文件到 `~/.claude/`
-3. 复制其他目录（errors, capabilities 等）到 `~/.claude/`
+在 Claude Code 中说：
+
+```
+按照 INSTALL.md 安装这个配置系统
+```
+
+Claude Code 会自动：
+- 读取 `INSTALL.md` 配置清单
+- 备份现有配置（如果存在）
+- 复制所有文件到 `~/.claude/`
+- 验证安装结果
+
+就这么简单！✨
 
 ### 验证安装
 
-运行验证脚本：
+安装完成后，重启 Claude Code，你应该看到：
+- ✅ 高频错误提醒
+- ✅ 快速决策树
+- ✅ 工作模式确认
+
+或手动检查：
 
 ```bash
-# Unix/Linux/macOS
-./scripts/verify.sh
-
-# Windows PowerShell
-.\scripts\verify.ps1
+ls ~/.claude/CLAUDE.md
+ls ~/.claude/errors/ERROR_CATALOG.md
+ls ~/.claude/capabilities/mcp-servers.md
 ```
-
-或启动 Claude Code，你应该看到：
-- 高频错误提醒
-- 快速决策树
-- 工作模式确认
 
 ---
 
