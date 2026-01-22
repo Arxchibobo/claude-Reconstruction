@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Marketing 完整指南 (中文版)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            page-break-after: always;
+        }
+
+        .slide-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .slide-content {
+            background: white;
+        }
+
+        .slide-highlight {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .slide-dark {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .slide-green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 2.3rem;
+            margin-bottom: 40px;
+            color: #667eea;
+        }
+
+        .slide-dark h2, .slide-highlight h2, .slide-green h2 {
+            color: white;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            margin: 25px 0 15px;
+            color: #764ba2;
+        }
+
+        .slide-dark h3 {
+            color: #f093fb;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            max-width: 900px;
+        }
+
+        .subtitle {
+            font-size: 1.6rem;
+            opacity: 0.9;
+        }
+
+        ul {
+            list-style: none;
+            font-size: 1.2rem;
+        }
+
+        li {
+            padding: 10px 0;
+            padding-left: 35px;
+            position: relative;
+        }
+
+        li::before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .slide-dark li::before, .slide-highlight li::before, .slide-green li::before {
+            color: #fff;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 16px;
+            border-left: 4px solid #667eea;
+        }
+
+        .slide-dark .card {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #f093fb;
+        }
+
+        .card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: #667eea;
+        }
+
+        .slide-dark .card h4 {
+            color: #f5576c;
+        }
+
+        .card p {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            font-size: 1rem;
+        }
+
+        th, td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 20px;
+            margin: 30px 0;
+        }
+
+        .highlight-box h3 {
+            color: white;
+            margin-top: 0;
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 28px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #667eea;
+        }
+
+        .timeline-item {
+            text-align: center;
+            position: relative;
+            flex: 1;
+        }
+
+        .timeline-circle {
+            width: 56px;
+            height: 56px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin: 0 auto 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-text {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .timeline-time {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .big-number {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: #667eea;
+        }
+
+        .slide-title .big-number {
+            color: white;
+        }
+
+        code {
+            background: rgba(0,0,0,0.1);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 35px 0;
+            font-size: 1.1rem;
+        }
+
+        .flow-box {
+            background: white;
+            padding: 18px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .flow-arrow {
+            font-size: 1.8rem;
+            color: #667eea;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .badge-ready {
+            background: #28a745;
+            color: white;
+        }
+
+        .badge-config {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .badge-optional {
+            background: #6c757d;
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        @media print {
+            .slide {
+                min-height: 100vh;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面 -->
+    <div class="slide slide-title">
+        <h1>Vibe Marketing</h1>
+        <p class="subtitle">AI驱动的营销自动化系统</p>
+        <p style="margin-top: 40px; font-size: 1.3rem;">
+            将 2 周的营销研究压缩到 1 小时<br>
+            使用 Claude Code + MCP + n8n
+        </p>
+        <p style="margin-top: auto; opacity: 0.7;">
+            中文版 | 2026-01-17 | 基于 The Vibe Marketing Kit
+        </p>
+    </div>
+
+    <!-- 什么是Vibe Marketing -->
+    <div class="slide slide-content">
+        <h2>什么是 Vibe Marketing？</h2>
+        <p>一个<strong>即插即用的营销系统</strong>，专为想要快速行动、建立势能的创作者、营销人员和创始人设计。</p>
+
+        <div class="highlight-box">
+            <h3>核心公式</h3>
+            <p style="font-size: 1.6rem; margin: 0;">研究 > 策略 > 内容 > 收入</p>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h4>传统方式</h4>
+                <p>2周+手动研究、工具分散、产出不稳定</p>
+            </div>
+            <div class="card">
+                <h4>Vibe Marketing</h4>
+                <p>~1小时自动化流程、工具集成、系统化产出</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 两大支柱 -->
+    <div class="slide slide-dark">
+        <h2>Vibe Marketing 两大支柱</h2>
+
+        <div class="grid-2">
+            <div>
+                <h3>支柱1: 营销精通</h3>
+                <ul>
+                    <li>用 Claude Code + Google 数据发现盈利未开发的细分市场</li>
+                    <li>自动将研究转化为多渠道内容（博客、视频、Newsletter）</li>
+                    <li>用提示链生成策略、创意想法和定位</li>
+                    <li>将洞察转化为随时间复利的 ROI 驱动内容系统</li>
+                    <li>使用 Anti-AI 指导 JSON 保持内容真实性和人性化</li>
+                </ul>
+            </div>
+            <div>
+                <h3>支柱2: AI系统构建</h3>
+                <ul>
+                    <li>设置 MCP 服务器连接 Claude、n8n 和各种 API</li>
+                    <li>使用 Claude Code 进行 Git 驱动的自动化和本地测试</li>
+                    <li>构建自动化研究、写作和发布的 n8n 工作流</li>
+                    <li>集成 Claude、Apify 和 Supabase 形成即插即用的内容运营管道</li>
+                    <li>用会思考而非仅行动的 AI 智能体扩展营销能力</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 你能用什么？ -->
+    <div class="slide slide-green">
+        <h2>你现在就能用的东西</h2>
+
+        <div class="grid-2">
+            <div>
+                <h3>1. 可直接使用的模板</h3>
+                <ul>
+                    <li><code>Site-Exec-Summary.md</code> - 网站定位审计模板</li>
+                    <li><code>Market-Gap-Analysis.md</code> - 市场差距分析模板</li>
+                    <li><code>Content-Gap-Analysis.md</code> - 内容差距分析模板</li>
+                    <li><code>Revenue-Projection.md</code> - 收入预测模板</li>
+                    <li><code>Influencer-Patterns.md</code> - 网红模式分析模板</li>
+                </ul>
+            </div>
+            <div>
+                <h3>2. 方法论（立即可用）</h3>
+                <ul>
+                    <li>5阶段研究到收入流程</li>
+                    <li>竞品分析框架</li>
+                    <li>内容差距识别方法</li>
+                    <li>ROI建模方法</li>
+                    <li>网红模式逆向工程</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 需要配置的工具 -->
+    <div class="slide slide-content">
+        <h2>需要配置的 MCP 工具</h2>
+
+        <table>
+            <tr>
+                <th>工具</th>
+                <th>用途</th>
+                <th>你能做什么</th>
+                <th>状态</th>
+            </tr>
+            <tr>
+                <td><strong>Firecrawl MCP</strong></td>
+                <td>网站爬虫</td>
+                <td>自动抓取竞品网站、提取定位信息、分析品牌声音</td>
+                <td><span class="status-badge badge-config">需配置</span></td>
+            </tr>
+            <tr>
+                <td><strong>Perplexity MCP</strong></td>
+                <td>AI搜索</td>
+                <td>市场调研、竞争情报、趋势分析、关键词发现</td>
+                <td><span class="status-badge badge-config">需配置</span></td>
+            </tr>
+            <tr>
+                <td><strong>Apify</strong></td>
+                <td>数据抓取</td>
+                <td>Reddit监控、Google Maps数据、社交媒体抓取</td>
+                <td><span class="status-badge badge-optional">可选</span></td>
+            </tr>
+            <tr>
+                <td><strong>n8n</strong></td>
+                <td>工作流自动化</td>
+                <td>连接Google Sheets、Slack通知、定时任务</td>
+                <td><span class="status-badge badge-optional">可选</span></td>
+            </tr>
+        </table>
+
+        <div class="highlight-box" style="margin-top: 40px;">
+            <p style="margin: 0; font-size: 1.2rem;"><strong>推荐优先级：</strong>Firecrawl > Perplexity > Apify > n8n</p>
+        </div>
+    </div>
+
+    <!-- 5阶段流程 -->
+    <div class="slide slide-content">
+        <h2>5阶段研究到收入流程</h2>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-circle">1</div>
+                <div class="timeline-text">网站审计</div>
+                <div class="timeline-time">15分钟</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-circle">2</div>
+                <div class="timeline-text">市场研究</div>
+                <div class="timeline-time">20分钟</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-circle">3</div>
+                <div class="timeline-text">内容策略</div>
+                <div class="timeline-time">15分钟</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-circle">4</div>
+                <div class="timeline-text">收入建模</div>
+                <div class="timeline-time">10分钟</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-circle">5</div>
+                <div class="timeline-text">内容创作</div>
+                <div class="timeline-time">20分钟</div>
+            </div>
+        </div>
+
+        <div class="grid-2" style="margin-top: 40px;">
+            <div class="card">
+                <h4>阶段1-2: 研究（用Firecrawl + Perplexity）</h4>
+                <p>抓取竞品网站 > 分析市场差距 > 识别蓝海机会</p>
+            </div>
+            <div class="card">
+                <h4>阶段3-5: 执行（用Claude）</h4>
+                <p>制定内容策略 > 建立收入模型 > 生成首篇内容</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模板详解 -->
+    <div class="slide slide-dark">
+        <h2>核心模板详解</h2>
+
+        <div class="grid-3">
+            <div class="card">
+                <h4>网站执行摘要</h4>
+                <p><strong>包含：</strong>目标行业、理想客户画像(ICP)、独特价值主张(UVP)、品牌声音、证据点</p>
+            </div>
+            <div class="card">
+                <h4>市场差距分析</h4>
+                <p><strong>包含：</strong>竞争对手盲点、蓝海机会、搜索情报、趋势识别</p>
+            </div>
+            <div class="card">
+                <h4>内容差距分析</h4>
+                <p><strong>包含：</strong>主题差距、格式差距、定位差距、问题差距</p>
+            </div>
+            <div class="card">
+                <h4>收入预测</h4>
+                <p><strong>包含：</strong>流量假设、转化漏斗、收入流、低/中/高场景</p>
+            </div>
+            <div class="card">
+                <h4>网红模式</h4>
+                <p><strong>包含：</strong>语言分析、开场钩子、可重复结构、效果指标</p>
+            </div>
+            <div class="card">
+                <h4>优先内容计划</h4>
+                <p><strong>包含：</strong>今日速赢、本周目标、未来发展</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 实际应用场景 -->
+    <div class="slide slide-content">
+        <h2>实际应用场景</h2>
+
+        <div class="grid-2">
+            <div>
+                <h3>场景1: 竞品分析</h3>
+                <div class="card" style="margin-top: 15px;">
+                    <p><strong>步骤：</strong></p>
+                    <p>1. 用Firecrawl抓取竞品网站</p>
+                    <p>2. 提取他们的定位、ICP、UVP</p>
+                    <p>3. 用Perplexity搜索市场趋势</p>
+                    <p>4. 让Claude分析差距机会</p>
+                    <p><strong>产出：</strong>竞品分析报告 + 差异化策略</p>
+                </div>
+            </div>
+            <div>
+                <h3>场景2: 内容策划</h3>
+                <div class="card" style="margin-top: 15px;">
+                    <p><strong>步骤：</strong></p>
+                    <p>1. 分析目标受众的问题/痛点</p>
+                    <p>2. 用Perplexity找高搜索低竞争话题</p>
+                    <p>3. 参考网红模式设计内容框架</p>
+                    <p>4. 让Claude生成内容草稿</p>
+                    <p><strong>产出：</strong>内容日历 + 首篇文章</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2" style="margin-top: 30px;">
+            <div>
+                <h3>场景3: 市场定位</h3>
+                <div class="card" style="margin-top: 15px;">
+                    <p><strong>步骤：</strong></p>
+                    <p>1. 审计自己的网站定位</p>
+                    <p>2. 对比3-5个竞品</p>
+                    <p>3. 识别未被占领的定位角度</p>
+                    <p>4. 重新定义品牌信息</p>
+                    <p><strong>产出：</strong>品牌定位文档 + 信息框架</p>
+                </div>
+            </div>
+            <div>
+                <h3>场景4: 收入规划</h3>
+                <div class="card" style="margin-top: 15px;">
+                    <p><strong>步骤：</strong></p>
+                    <p>1. 基于内容策略估算流量</p>
+                    <p>2. 设定转化率假设</p>
+                    <p>3. 规划收入渠道（课程/咨询/产品）</p>
+                    <p>4. 建立低/中/高收入模型</p>
+                    <p><strong>产出：</strong>收入预测 + 优先级决策</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- n8n自动化 -->
+    <div class="slide slide-highlight">
+        <h2>n8n 自动化工作流（可选）</h2>
+
+        <div class="grid-2">
+            <div>
+                <h3 style="color: white;">可用集成</h3>
+                <ul>
+                    <li>Google Sheets - 数据收集、内容日历</li>
+                    <li>Slack - 团队通知、触发器</li>
+                    <li>Reddit - 社交监控、关键词追踪</li>
+                    <li>Apify - 网页抓取管道</li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="color: white;">示例工作流</h3>
+                <ul>
+                    <li>研究到内容自动化管道</li>
+                    <li>竞品监控告警</li>
+                    <li>潜客生成流程</li>
+                    <li>内容多平台分发</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.2); padding: 25px; border-radius: 15px; margin-top: 40px;">
+            <p style="margin: 0; font-size: 1.1rem;"><strong>注意：</strong>n8n需要单独安装和配置。如果你只是想快速开始，可以先跳过这部分，用模板+Claude手动执行流程。</p>
+        </div>
+    </div>
+
+    <!-- Reddit OAuth 配置 -->
+    <div class="slide slide-content">
+        <h2>Reddit x n8n 集成（详细步骤）</h2>
+
+        <h3>步骤1: 创建 Reddit 应用</h3>
+        <div class="card" style="margin-bottom: 20px;">
+            <p>1. 登录 Reddit，访问 <code>reddit.com/prefs/apps</code></p>
+            <p>2. 滚动到 "Developed Applications" 点击 <strong>Create App</strong></p>
+            <p>3. 填写: Name（如 n8n-test）、App type: Web App、Redirect URI: 你的n8n回调URL</p>
+            <p>4. 记录 <strong>Client ID</strong> 和 <strong>Client Secret</strong></p>
+        </div>
+
+        <h3>步骤2: 在 n8n 配置 OAuth2</h3>
+        <div class="card" style="margin-bottom: 20px;">
+            <p>1. n8n 中创建 OAuth2 API 凭证</p>
+            <p>2. Authorization URL: <code>https://www.reddit.com/api/v1/authorize</code></p>
+            <p>3. Access Token URL: <code>https://www.reddit.com/api/v1/access_token</code></p>
+            <p>4. Scope: <code>read identity history</code></p>
+            <p>5. Auth URI Query: <code>duration=permanent</code></p>
+        </div>
+
+        <h3>用途</h3>
+        <p>监控子版块关键词、跟踪竞品提及、发现内容创意、识别客户痛点</p>
+    </div>
+
+    <!-- Apify Google Maps 工作流 -->
+    <div class="slide slide-content">
+        <h2>Apify Google Maps 本地潜客生成</h2>
+
+        <div class="highlight-box">
+            <h3>高效技巧</h3>
+            <p style="margin: 0;">先在 Apify 运行抓取，然后用 n8n 的 HTTP Get 节点获取数据。这样可以避免 API 限制、超时和不必要的费用！</p>
+        </div>
+
+        <div class="grid-2" style="margin-top: 30px;">
+            <div>
+                <h3>配置步骤</h3>
+                <div class="card">
+                    <p><strong>Step 1:</strong> 选择 Google Maps Scraper</p>
+                    <p>推荐: <code>compass/crawler-google-places</code></p>
+                    <p>成本: ~$4/1000个商家</p>
+                </div>
+                <div class="card" style="margin-top: 15px;">
+                    <p><strong>Step 2:</strong> 配置搜索参数</p>
+                    <p>搜索词: "outdoor kitchen designer"</p>
+                    <p>位置: "Houston, Texas"</p>
+                </div>
+            </div>
+            <div>
+                <h3>工作流示例</h3>
+                <div class="flow-diagram" style="flex-direction: column; align-items: flex-start;">
+                    <div class="flow-box">Apify 抓取 Google Maps 数据</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">n8n HTTP 请求获取数据集</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">Google Sheets 存储</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">Claude 评分和筛选潜客</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apify 可用 Actor -->
+    <div class="slide slide-dark">
+        <h2>Apify 营销数据抓取 Actor</h2>
+
+        <table>
+            <tr>
+                <th>Actor</th>
+                <th>用途</th>
+                <th>定价</th>
+                <th>营销场景</th>
+            </tr>
+            <tr>
+                <td><strong>Google Maps Scraper</strong></td>
+                <td>本地商家数据</td>
+                <td>$4/1000个</td>
+                <td>本地潜客生成</td>
+            </tr>
+            <tr>
+                <td><strong>Reddit Scraper</strong></td>
+                <td>社区讨论</td>
+                <td>按结果计费</td>
+                <td>市场研究、痛点发现</td>
+            </tr>
+            <tr>
+                <td><strong>LinkedIn Scraper</strong></td>
+                <td>职业档案</td>
+                <td>按档案计费</td>
+                <td>B2B潜客生成</td>
+            </tr>
+            <tr>
+                <td><strong>TikTok Scraper</strong></td>
+                <td>热门内容</td>
+                <td>按结果计费</td>
+                <td>内容灵感、趋势分析</td>
+            </tr>
+            <tr>
+                <td><strong>Website Crawler</strong></td>
+                <td>网页内容</td>
+                <td>按页面计费</td>
+                <td>竞品分析</td>
+            </tr>
+        </table>
+
+        <div style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+            <p style="margin: 0;"><strong>使用流程:</strong> Apify Store 搜索 Actor → 配置参数 → 运行 → 获取 Dataset ID → n8n HTTP 请求获取 JSON</p>
+        </div>
+    </div>
+
+    <!-- 快速开始 -->
+    <div class="slide slide-content">
+        <h2>快速开始指南</h2>
+
+        <h3>立即可做（无需配置）</h3>
+        <div class="card" style="margin-bottom: 30px;">
+            <p>1. 打开 <code>VIBE_MARKETING_GUIDE.md</code> 阅读完整指南</p>
+            <p>2. 复制模板结构到你的项目</p>
+            <p>3. 让Claude帮你填充模板（手动提供竞品URL和信息）</p>
+            <p>4. 按5阶段流程执行</p>
+        </div>
+
+        <h3>进阶配置（提升效率10倍）</h3>
+        <div class="card">
+            <p>1. 配置 Firecrawl MCP - 自动化网站抓取</p>
+            <p>2. 配置 Perplexity MCP - 自动化市场研究</p>
+            <p>3. （可选）安装 n8n - 工作流自动化</p>
+            <p>4. （可选）配置 Apify - 社交媒体数据</p>
+        </div>
+    </div>
+
+    <!-- 已更新的知识库 -->
+    <div class="slide slide-dark">
+        <h2>已更新到你的知识库</h2>
+
+        <table>
+            <tr>
+                <th>文件</th>
+                <th>内容</th>
+                <th>用途</th>
+            </tr>
+            <tr>
+                <td><code>CLAUDE.md</code></td>
+                <td>新增 Vibe Marketing 章节</td>
+                <td>快速参考、决策树</td>
+            </tr>
+            <tr>
+                <td><code>VIBE_MARKETING_GUIDE.md</code></td>
+                <td>完整指南 + 所有模板</td>
+                <td>详细学习、模板复制</td>
+            </tr>
+            <tr>
+                <td><code>MCP_SETUP_GUIDE.md</code></td>
+                <td>Firecrawl/Perplexity/Apify配置</td>
+                <td>工具安装配置</td>
+            </tr>
+            <tr>
+                <td><code>N8N_WORKFLOWS.md</code></td>
+                <td>n8n工作流详解</td>
+                <td>自动化配置</td>
+            </tr>
+        </table>
+
+        <div style="margin-top: 40px;">
+            <h3>文件位置</h3>
+            <p><code>E:\Bobo's Coding cache\docs\vibe-marketing\</code></p>
+        </div>
+    </div>
+
+    <!-- 总结 -->
+    <div class="slide slide-title">
+        <h1>总结</h1>
+        <div style="font-size: 1.4rem; margin-top: 30px;">
+            <p style="margin: 15px 0;">1. <strong>核心价值</strong>: 2周研究 > 1小时自动化</p>
+            <p style="margin: 15px 0;">2. <strong>立即可用</strong>: 5个模板 + 方法论框架</p>
+            <p style="margin: 15px 0;">3. <strong>推荐配置</strong>: Firecrawl + Perplexity MCP</p>
+            <p style="margin: 15px 0;">4. <strong>工作流程</strong>: 审计 > 研究 > 策略 > 建模 > 创作</p>
+            <p style="margin: 15px 0;">5. <strong>可选增强</strong>: n8n 自动化 + Apify 数据</p>
+        </div>
+
+        <div class="highlight-box" style="margin-top: 50px; background: rgba(255,255,255,0.2);">
+            <h3 style="margin-bottom: 10px;">下一步行动</h3>
+            <p style="margin: 0; font-size: 1.2rem;">
+                打开 <code>docs/vibe-marketing/VIBE_MARKETING_GUIDE.md</code><br>
+                选择一个模板开始你的第一次营销研究
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Vibe Marketing 中文指南 | 2026-01-17 | 基于 The Vibe Marketing Kit</p>
+    </div>
+</body>
+</html>

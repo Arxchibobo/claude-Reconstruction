@@ -1,135 +1,88 @@
 # 异步并行处理错误
 
-> **错误 ID**: E001 | **频率**: 高 | **严重度**: 🔴 严重
+> **错误 ID**: E001
+> **频率**: 高
+> **严重度**: 🔴 严重
 
 ---
 
-## 错误描述
+## 📋 错误描述
 
-多个独立的异步操作顺序执行，而非并行执行，导致性能严重下降。
+**常见表现**:
+- 多个独立 API 调用顺序执行
+- 加载时间 = 单次时间 × 调用次数
+- 性能极差（10-13x 慢）
 
-## 自检问题
-
-- [ ] 多个独立异步操作是否使用 `Promise.all()`？
-- [ ] 是否有不必要的 `await` 阻塞？
-- [ ] 批量操作是否并行化？
+**根本原因**:
+- 使用 `for...of` + `await` 顺序执行
+- 忽略了多个请求之间没有依赖关系
+- 没有利用 JavaScript 的并发能力
 
 ---
 
-## 错误案例
-
-### 案例 1: 循环中的顺序 await
+## ❌ 错误示例
 
 ```javascript
-// ❌ 错误：顺序执行 (13次 × 2秒 = 26秒)
-async function searchAll(searchTerms) {
-  const allResults = [];
-  for (const term of searchTerms) {
-    const results = await api.search(term);  // 每次等待完成
-    allResults.push(...results);
-  }
-  return allResults;
+// ❌ 错误：顺序执行 13 次搜索
+for (const term of searchTerms) {
+  const results = await githubProxy.searchRepositories(term);
+  allResults.push(...results);
 }
-
-// ✅ 正确：并行执行 (max 2秒)
-async function searchAll(searchTerms) {
-  const searchPromises = searchTerms.map(term =>
-    api.search(term)
-      .then(results => ({ term, results, success: true }))
-      .catch(error => ({ term, results: [], success: false, error: error.message }))
-  );
-  const searchResults = await Promise.all(searchPromises);
-  return searchResults.filter(r => r.success).flatMap(r => r.results);
-}
-```
-
-### 案例 2: 独立数据获取顺序执行
-
-```javascript
-// ❌ 错误：顺序获取（总时间 = 各请求时间之和）
-async function loadDashboard(userId) {
-  const user = await fetchUser(userId);
-  const orders = await fetchOrders(userId);
-  const notifications = await fetchNotifications(userId);
-  return { user, orders, notifications };
-}
-
-// ✅ 正确：并行获取（总时间 = 最慢请求时间）
-async function loadDashboard(userId) {
-  const [user, orders, notifications] = await Promise.all([
-    fetchUser(userId),
-    fetchOrders(userId),
-    fetchNotifications(userId)
-  ]);
-  return { user, orders, notifications };
-}
-```
-
-### 案例 3: 批量数据处理
-
-```javascript
-// ❌ 错误：逐个处理
-async function processItems(items) {
-  for (const item of items) {
-    await processItem(item);
-  }
-}
-
-// ✅ 正确：批量并行（带并发控制）
-async function processItems(items, concurrency = 5) {
-  const chunks = [];
-  for (let i = 0; i < items.length; i += concurrency) {
-    chunks.push(items.slice(i, i + concurrency));
-  }
-
-  for (const chunk of chunks) {
-    await Promise.all(chunk.map(item => processItem(item)));
-  }
-}
+// 总耗时：13 × 2秒 = 26秒+
 ```
 
 ---
 
-## 根因分析
-
-1. **习惯性思维**: 按顺序写代码的习惯
-2. **对 async/await 理解不足**: 不清楚 await 会阻塞执行
-3. **错误处理担忧**: 担心并行执行时错误难以追踪
-
-## 预防措施
-
-1. **代码审查检查点**: 看到循环中的 await，立即考虑是否可以并行
-2. **性能测试**: 对批量操作进行性能测试
-3. **使用 Promise.allSettled**: 当需要所有结果（包括失败的）时
+## ✅ 正确做法
 
 ```javascript
-// 使用 Promise.allSettled 处理部分失败
-const results = await Promise.allSettled(promises);
-const successful = results
-  .filter(r => r.status === 'fulfilled')
-  .map(r => r.value);
-const failed = results
-  .filter(r => r.status === 'rejected')
-  .map(r => r.reason);
+// ✅ 正确：并行执行所有搜索
+const searchPromises = searchTerms.map(term =>
+  githubProxy.searchRepositories(term)
+    .then(results => ({ term, results, success: true }))
+    .catch(error => {
+      console.error(`Search failed for "${term}":`, error.message);
+      return { term, results: [], success: false, error: error.message };
+    })
+);
+
+const searchResults = await Promise.all(searchPromises);
+// 总耗时：max(2秒) = 2秒
 ```
 
 ---
 
-## 相关错误
+## 🔍 关键改进
 
-- [E002 轮询无超时](./timeout-polling.md)
-- [E003 错误未重新抛出](./error-handling.md)
+1. ✅ 使用 `.map()` 创建 Promise 数组
+2. ✅ 使用 `Promise.all()` 并行执行
+3. ✅ 单个失败不影响其他（每个 Promise 内部处理错误）
+4. ✅ 性能提升 10-13 倍
 
 ---
 
-## 检测工具
+## 📌 自检清单
 
-可以使用 ESLint 规则 `no-await-in-loop` 来检测循环中的 await：
+- [ ] 是否有多个独立的异步操作？
+- [ ] 是否使用 `Promise.all()` 并行执行？
+- [ ] 是否每个 Promise 内部处理错误？
+- [ ] 是否避免使用 `for...of` + `await`？
 
-```json
-{
-  "rules": {
-    "no-await-in-loop": "warn"
-  }
-}
-```
+---
+
+## 🎯 适用场景
+
+✅ **应该并行**:
+- 多个独立 API 调用
+- 批量数据库查询（无依赖关系）
+- 多个文件读取操作
+- 并行 MCP 工具调用
+
+❌ **不应该并行**:
+- 后续操作依赖前面结果（需要顺序执行）
+- 需要限制并发数量（应使用 p-limit 等库）
+- 数据库事务操作（需要保证顺序）
+
+---
+
+**返回**: [ERROR_CATALOG.md](../ERROR_CATALOG.md)

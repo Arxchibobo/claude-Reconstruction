@@ -89,33 +89,70 @@ ls ~/.claude/capabilities/mcp-servers.md
 
 ```
 claude-reconstruction/
-├── README.md                 # 本文件
-├── core/                     # 核心配置
-│   ├── CLAUDE.md            # 主配置文件
-│   ├── QUICK_START.md       # 会话启动清单
-│   └── DECISION_TREE.md     # 能力决策树
-├── errors/                   # 错误知识库
-│   ├── ERROR_CATALOG.md     # 错误目录
-│   ├── system-errors/       # 系统级错误
-│   └── project-errors/      # 项目级错误
-├── capabilities/             # 能力文档
-│   ├── mcp-servers.md       # MCP 完整指南
-│   ├── skills-guide.md      # Skills 使用指南
-│   └── plugins-auto.md      # Plugins 自动激活
-├── workflows/                # 工作流程
-│   ├── auto-execution.md    # 自动执行模式
-│   └── data-analysis.md     # 数据分析流程
-├── learning/                 # 学习资源
-│   └── AI_WORKFLOW_INSIGHTS.md
-├── references/               # 参考资料
-│   └── BEST_PRACTICES.md    # 最佳实践
-├── automation/               # 自动化配置
-│   └── hooks.md             # Hooks 配置
-├── delegator/                # 委托系统
-│   └── README.md            # Delegator 说明
-└── scripts/                  # 安装脚本
-    ├── install.sh           # Unix 安装脚本
-    └── install.ps1          # Windows 安装脚本
+├── README.md                          # 本文件
+├── RESTRUCTURE_PLAN.md                # 重构计划文档
+├── core/                              # 🎯 核心配置
+│   ├── CLAUDE.md                     # 主配置文件（v3.2）
+│   ├── DECISION_TREE.md              # 能力决策树
+│   ├── QUICK_START.md                # 快速启动清单
+│   └── WORK_MODES.md                 # 工作模式详解
+├── errors/                            # 🔴 错误知识库
+│   ├── ERROR_CATALOG.md              # 错误目录（Top 5 + 完整列表）
+│   ├── system-errors/                # 系统级错误（6个）
+│   └── project-errors/               # 项目级错误（用户添加）
+├── capabilities/                      # 🔧 能力文档
+│   ├── mcp-servers.md                # MCP Servers 完整指南
+│   ├── skills-guide.md               # Skills 使用指南（81个）
+│   ├── plugins-auto.md               # Plugins 自动激活
+│   ├── agents-delegation.md          # Agents 委托系统
+│   ├── MARKETING_SKILLS_GUIDE.md     # 营销技能（24个）
+│   ├── PPT_WORKFLOW.md               # PPT 制作工作流
+│   └── PROCESSING_SKILL.md           # Processing 创意编程
+├── design/                            # 🎨 设计资源
+│   ├── DESIGN_MASTER_PERSONA.md      # 设计大师人格
+│   └── UI_DESIGN_STYLES_REFERENCE.md # 30种 UI/UX 设计风格
+├── vibe-marketing/                    # 📢 Vibe Marketing 工具包
+│   ├── VIBE_MARKETING_GUIDE.md       # 完整营销指南
+│   ├── MCP_SETUP_GUIDE.md            # MCP 设置
+│   └── N8N_WORKFLOWS.md              # n8n 自动化工作流
+├── skills-research/                   # 🔬 Skills 研究项目
+│   ├── README.md                     # Skills 索引
+│   ├── marketingskills/              # 营销 Skills（24个）
+│   ├── ui-ux-pro-max-skill/          # UI/UX Pro Max
+│   ├── browser-use/                  # 浏览器使用
+│   ├── shane-skill/                  # 数据分析 Skills（6个）
+│   ├── deep-research-skill/          # 深度研究系统
+│   ├── NanoBanana-PPT-Skills/        # Nano Banana PPT
+│   └── Skill_Seekers/                # Skill 创建工具
+├── workflows/                         # 🔄 标准工作流程
+│   ├── auto-execution.md             # 自动执行模式
+│   ├── data-analysis.md              # 数据分析流程
+│   ├── full-stack-dev.md             # 全栈开发流程
+│   ├── debugging-ops.md              # 调试运维流程
+│   └── browser-automation.md         # 浏览器自动化
+├── learning/                          # 📚 学习资源
+│   ├── AI_WORKFLOW_INSIGHTS.md       # AI 工作流洞察
+│   ├── CLAUDE_SKILLS_RESOURCES.md    # Claude Skills 资源
+│   ├── SESSION_INSIGHTS.md           # 会话洞察
+│   ├── SKILL_EVOLUTION.md            # Skill 演进
+│   └── OPTIMIZATION_QUEUE.md         # 优化队列
+├── references/                        # 📖 参考资料
+│   ├── BEST_PRACTICES.md             # 最佳实践
+│   ├── capability-matrix.md          # 能力矩阵
+│   ├── commands-cheatsheet.md        # 命令速查表
+│   └── faq.md                        # 常见问题
+├── automation/                        # ⚙️ 自动化配置
+│   └── hooks.md                      # Hooks 配置指南
+├── delegator/                         # 🤝 委托系统（GPT 专家）
+│   └── README.md                     # 委托系统说明
+├── examples/                          # 📝 使用示例
+│   ├── README.md                     # 示例索引
+│   └── nodejs-api/                   # Node.js API 示例
+├── scripts/                           # 🛠️ 安装脚本
+│   ├── install.sh                    # Unix/Linux/macOS 安装
+│   └── install.ps1                   # Windows PowerShell 安装
+└── analysis/                          # 📊 分析报告
+    └── token-efficiency-analysis.md  # Token 效率分析
 ```
 
 ---
@@ -134,6 +171,8 @@ claude-reconstruction/
 | E004 | SQL 未用 CTE | 预过滤数据? |
 | ... | ... | ... |
 
+👉 [完整错误目录](errors/ERROR_CATALOG.md)
+
 ### 2. 决策树
 
 ```
@@ -141,6 +180,8 @@ claude-reconstruction/
 需要自动化？   → Skills (/commit, /write-tests)
 需要建议？     → Plugins（自动激活）
 ```
+
+👉 [完整决策树](core/DECISION_TREE.md)
 
 ### 3. 工作模式
 
@@ -154,13 +195,39 @@ claude-reconstruction/
 3. 需求本质矛盾
 4. 不可逆高风险
 
+👉 [核心配置](core/CLAUDE.md)
+
 ### 4. 能力层次
 
-| 层次 | 工具 | 用途 |
-|-----|------|-----|
-| **Layer 1** | MCP Servers | 外部数据访问 |
-| **Layer 2** | Skills | 自动化任务 |
-| **Layer 3** | Plugins | 专业建议（自动激活）|
+| 层次 | 工具 | 用途 | 文档 |
+|-----|------|-----|------|
+| **Layer 1** | MCP Servers | 外部数据访问 | [MCP 指南](capabilities/mcp-servers.md) |
+| **Layer 2** | Skills | 自动化任务 | [Skills 指南](capabilities/skills-guide.md) |
+| **Layer 3** | Plugins | 专业建议（自动激活）| [Plugins 指南](capabilities/plugins-auto.md) |
+
+### 5. 🎨 设计系统
+
+- **30 种 UI/UX 设计风格** - 从极简到赛博朋克
+- **设计大师人格** - 完整设计哲学和标准
+- **PPT 制作工作流** - Nano Banana Pro + Processing + Python-pptx
+
+👉 [设计资源](design/)
+
+### 6. 📢 Vibe Marketing
+
+- **AI 驱动的营销自动化** - 2周研究压缩到1小时
+- **24 个营销 Skills** - CRO、文案、SEO、付费广告、定价策略
+- **MCP 工具包** - Firecrawl 爬虫、Perplexity 研究、n8n 自动化
+
+👉 [Vibe Marketing 指南](vibe-marketing/VIBE_MARKETING_GUIDE.md)
+
+### 7. 🔬 Skills 研究项目
+
+- **9 个专业 Skills 项目** - 营销、UI/UX、数据分析、研究、PPT制作
+- **数据分析 Skills** - 6 个核心业务分析工具
+- **深度研究系统** - Graph of Thoughts 多代理研究
+
+👉 [Skills 研究索引](skills-research/README.md)
 
 ---
 
