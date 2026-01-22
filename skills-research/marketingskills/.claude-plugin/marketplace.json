@@ -1,0 +1,45 @@
+{
+  "name": "marketingskills",
+  "owner": {
+    "name": "Corey Haines",
+    "url": "https://corey.co"
+  },
+  "metadata": {
+    "description": "Marketing skills for Claude Code — conversion optimization, copywriting, SEO, paid ads, and growth",
+    "version": "1.0.0",
+    "repository": "https://github.com/coreyhaines31/marketingskills"
+  },
+  "plugins": [
+    {
+      "name": "marketing-skills",
+      "description": "23 marketing skills for technical marketers and founders: CRO, copywriting, SEO, paid ads, pricing strategy, referral programs, and more",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/ab-test-setup",
+        "./skills/analytics-tracking",
+        "./skills/competitor-alternatives",
+        "./skills/copy-editing",
+        "./skills/copywriting",
+        "./skills/email-sequence",
+        "./skills/form-cro",
+        "./skills/free-tool-strategy",
+        "./skills/launch-strategy",
+        "./skills/marketing-ideas",
+        "./skills/marketing-psychology",
+        "./skills/onboarding-cro",
+        "./skills/page-cro",
+        "./skills/paid-ads",
+        "./skills/paywall-upgrade-cro",
+        "./skills/popup-cro",
+        "./skills/pricing-strategy",
+        "./skills/programmatic-seo",
+        "./skills/referral-program",
+        "./skills/schema-markup",
+        "./skills/seo-audit",
+        "./skills/signup-flow-cro",
+        "./skills/social-content"
+      ]
+    }
+  ]
+}

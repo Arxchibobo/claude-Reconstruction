@@ -1,0 +1,37 @@
+{
+  "name": "skill-seeker",
+  "repo": "yusufkaraaslan/Skill_Seekers",
+  "description": "Skill Seeker - Automatically converts documentation websites, GitHub repositories, and PDF files into production-ready Claude AI skills. Use when users need to create skills from documentation or code.",
+  "local_repo_path": "E:/Bobo's Coding cache/Skill_Seekers",
+  "include_issues": false,
+  "include_changelog": true,
+  "include_releases": false,
+  "include_code": true,
+  "file_patterns": [
+    "src/**/*.py",
+    "configs/*.json",
+    "*.md",
+    "docs/*.md"
+  ],
+  "exclude_dirs_additional": [
+    "output",
+    ".git",
+    "venv",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    "htmlcov",
+    ".tox",
+    "dist",
+    "build"
+  ],
+  "categories": {
+    "getting_started": ["README", "QUICKSTART", "BULLETPROOF", "getting", "start", "setup", "install"],
+    "cli": ["cli", "command", "scraper", "doc_scraper", "main"],
+    "configuration": ["config", "settings", "json", "yaml"],
+    "mcp": ["mcp", "server", "agent", "detector"],
+    "api": ["api", "interface", "endpoint"],
+    "examples": ["example", "demo", "test", "sample"],
+    "documentation": ["docs", "guide", "tutorial", "howto"]
+  }
+}

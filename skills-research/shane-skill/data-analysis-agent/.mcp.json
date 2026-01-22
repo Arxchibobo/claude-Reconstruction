@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "mcphub": {
+      "type": "http",
+      "url": "http://52.12.230.109:3000/mcp",
+      "headers": {
+        "Authorization": "Bearer ooiq8xOQq7qx"
+      }
+    }
+  }
+}

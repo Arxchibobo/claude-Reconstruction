@@ -1,0 +1,24 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/sync-daily-margin",
+      "schedule": "10 16 * * *"
+    },
+    {
+      "path": "/api/cron/sync-cost-breakdown",
+      "schedule": "10 16 * * *"
+    },
+    {
+      "path": "/api/cron/daily-margin-alert",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/auth-success-alert",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/weekly-email-whitelist-alert",
+      "schedule": "5 2 * * 5"
+    }
+  ]
+}
