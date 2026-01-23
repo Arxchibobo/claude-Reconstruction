@@ -61,7 +61,7 @@
 | 全面业务表现 | 收入与订阅分析 | 按月收入、复购率、套餐销售 |
 | 主站 vs Art 消耗 | 主站电量分析 | 电量、主站、Art |
 
-### 全栈开发场景（12 个）
+### 全栈开发场景（15 个）
 
 | # | 任务描述 | 最佳工具 | 示例命令/调用 |
 |---|---------|---------|--------------|
@@ -77,6 +77,9 @@
 | 25 | 添加代码注释 | `/add-comments` skill | 自动生成语义化注释 |
 | 26 | 性能优化建议 | `/optimize-performance` skill | 识别瓶颈 + 优化方案 |
 | 27 | 一键提交+推送+PR | commit-push-pr skill | 自动化完整 Git 工作流 |
+| 28 | **无障碍性检查** | **ESLint + Playwright** | `npm run lint` + `npm run test:accessibility` |
+| 29 | **知识库集成** | **KnowledgeBaseService** | 启动时加载 12 个文档到内存 |
+| 30 | **Pre-commit Hook 设置** | **Husky** | `npx husky install` + `chmod +x .husky/pre-commit` |
 
 ### 浏览器自动化场景（8 个）
 
