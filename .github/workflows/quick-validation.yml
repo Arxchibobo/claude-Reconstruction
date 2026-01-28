@@ -29,14 +29,21 @@ jobs:
           echo "🔍 Running quick Markdown validation..."
           bash scripts/validate-markdown.sh . 2>&1 | tee validation.log
 
-          # 提取关键信息
-          TOTAL=$(grep "总文件数:" validation.log | awk '{print $2}' || echo "0")
-          PASSED=$(grep "通过:" validation.log | awk '{print $2}' || echo "0")
-          FAILED=$(grep "失败:" validation.log | awk '{print $2}' || echo "0")
+          # 提取关键信息（使用 sed 去除颜色代码）
+          TOTAL=$(grep "总文件数:" validation.log | sed 's/\x1b\[[0-9;]*m//g' | awk '{print $2}' || echo "0")
+          PASSED=$(grep "通过:" validation.log | sed 's/\x1b\[[0-9;]*m//g' | awk '{print $2}' || echo "0")
+          FAILED=$(grep "失败:" validation.log | sed 's/\x1b\[[0-9;]*m//g' | awk '{print $2}' || echo "0")
+
+          # 确保变量不为空，设置默认值
+          TOTAL=${TOTAL:-0}
+          PASSED=${PASSED:-0}
+          FAILED=${FAILED:-0}
 
           echo "TOTAL_FILES=$TOTAL" >> $GITHUB_ENV
           echo "PASSED_FILES=$PASSED" >> $GITHUB_ENV
           echo "FAILED_FILES=$FAILED" >> $GITHUB_ENV
+
+          echo "✅ Extracted: Total=$TOTAL, Passed=$PASSED, Failed=$FAILED"
 
       - name: Generate summary
         run: |
@@ -55,13 +62,24 @@ jobs:
       - name: Create badge
         if: github.ref == 'refs/heads/main'
         run: |
-          # 计算通过率
-          TOTAL=${{ env.TOTAL_FILES }}
-          PASSED=${{ env.PASSED_FILES }}
+          # 计算通过率，添加健壮的空值和零值检查
+          TOTAL="${{ env.TOTAL_FILES }}"
+          PASSED="${{ env.PASSED_FILES }}"
 
-          if [ "$TOTAL" != "0" ]; then
+          # 设置默认值，确保不为空
+          TOTAL=${TOTAL:-0}
+          PASSED=${PASSED:-0}
+
+          echo "📊 Calculating health score: Total=$TOTAL, Passed=$PASSED"
+
+          # 检查是否为有效数字且大于 0
+          if [ "$TOTAL" -gt 0 ] 2>/dev/null; then
             PASS_RATE=$((PASSED * 100 / TOTAL))
             echo "Documentation Health: ${PASS_RATE}%" > doc-health.txt
+            echo "✅ Health score: ${PASS_RATE}%"
+          else
+            echo "⚠️ No files to validate or invalid data. Skipping badge creation."
+            echo "Documentation Health: N/A" > doc-health.txt
           fi
 
       - name: Upload validation log
