@@ -8,7 +8,15 @@
     "test:coverage": "jest --coverage",
     "test:e001": "jest E001-async-parallel.test.js",
     "test:e002": "jest E002-polling-timeout.test.js",
-    "test:e003": "jest E003-error-swallowing.test.js"
+    "test:e003": "jest E003-error-swallowing.test.js",
+    "test:e004": "jest E004-sql-cte.test.js",
+    "test:e007": "jest E007-resource-cleanup.test.js",
+    "test:e008": "jest E008-id-validation.test.js",
+    "test:e011": "jest E011-gitbash-npm.test.js",
+    "test:e012": "jest E012-hook-permissions.test.js",
+    "test:e013": "jest E013-knowledge-loading.test.js",
+    "test:e014": "jest E014-path-handling.test.js",
+    "test:e015": "jest E015-hook-verification.test.js"
   },
   "keywords": [
     "testing",
