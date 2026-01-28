@@ -1,0 +1,73 @@
+name: Quick Validation on Push
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - '**.md'
+      - 'scripts/validate-*.sh'
+
+jobs:
+  quick-check:
+    name: Quick Documentation Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up environment
+        run: |
+          chmod +x scripts/*.sh
+
+      - name: Quick Markdown validation
+        id: quick-validation
+        continue-on-error: true
+        run: |
+          echo "🔍 Running quick Markdown validation..."
+          bash scripts/validate-markdown.sh . 2>&1 | tee validation.log
+
+          # 提取关键信息
+          TOTAL=$(grep "总文件数:" validation.log | awk '{print $2}' || echo "0")
+          PASSED=$(grep "通过:" validation.log | awk '{print $2}' || echo "0")
+          FAILED=$(grep "失败:" validation.log | awk '{print $2}' || echo "0")
+
+          echo "TOTAL_FILES=$TOTAL" >> $GITHUB_ENV
+          echo "PASSED_FILES=$PASSED" >> $GITHUB_ENV
+          echo "FAILED_FILES=$FAILED" >> $GITHUB_ENV
+
+      - name: Generate summary
+        run: |
+          echo "## 📋 Quick Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Total files:** ${{ env.TOTAL_FILES }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Passed:** ${{ env.PASSED_FILES }} ✅" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ env.FAILED_FILES }}" != "0" ]; then
+            echo "- **Failed:** ${{ env.FAILED_FILES }} ❌" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "_This is a quick check. Full validation runs weekly._" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create badge
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # 计算通过率
+          TOTAL=${{ env.TOTAL_FILES }}
+          PASSED=${{ env.PASSED_FILES }}
+
+          if [ "$TOTAL" != "0" ]; then
+            PASS_RATE=$((PASSED * 100 / TOTAL))
+            echo "Documentation Health: ${PASS_RATE}%" > doc-health.txt
+          fi
+
+      - name: Upload validation log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quick-validation-log
+          path: validation.log
+          retention-days: 7

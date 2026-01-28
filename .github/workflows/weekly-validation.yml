@@ -1,0 +1,256 @@
+name: Weekly Documentation Validation
+
+on:
+  # 每周一早上 8:00 (UTC) 运行
+  schedule:
+    - cron: '0 8 * * 1'
+
+  # 允许手动触发
+  workflow_dispatch:
+
+  # PR 提交时运行
+  pull_request:
+    paths:
+      - '**.md'
+      - 'scripts/validate-*.sh'
+      - 'scripts/detect-*.sh'
+
+jobs:
+  validate-docs:
+    name: Validate Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 获取完整历史，用于检测过时文档
+
+      - name: Set up environment
+        run: |
+          echo "VALIDATION_DATE=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
+          chmod +x scripts/*.sh
+
+      - name: Run Markdown format validation
+        id: markdown-validation
+        continue-on-error: true
+        run: |
+          echo "## Markdown 格式验证" >> $GITHUB_STEP_SUMMARY
+          bash scripts/validate-markdown.sh . 2>&1 | tee markdown-validation.log
+          if [ $? -eq 0 ]; then
+            echo "✅ Markdown 格式验证通过" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Markdown 格式验证有警告" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Run link validation
+        id: link-validation
+        continue-on-error: true
+        run: |
+          echo "## 链接有效性验证" >> $GITHUB_STEP_SUMMARY
+          bash scripts/validate-links.sh . 2>&1 | tee link-validation.log
+          if [ $? -eq 0 ]; then
+            echo "✅ 所有链接有效" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ 发现失效链接" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Run duplicate detection
+        id: duplicate-detection
+        continue-on-error: true
+        run: |
+          echo "## 重复内容检测" >> $GITHUB_STEP_SUMMARY
+          bash scripts/detect-duplicates.sh . 2>&1 | tee duplicate-detection.log
+          if [ $? -eq 0 ]; then
+            echo "✅ 未检测到重复内容" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ 发现重复内容" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Check outdated documents
+        id: outdated-check
+        continue-on-error: true
+        run: |
+          echo "## 过时文档检测" >> $GITHUB_STEP_SUMMARY
+          echo "检测超过 90 天未更新的文档：" >> $GITHUB_STEP_SUMMARY
+
+          # 查找超过 90 天未修改的 Markdown 文件
+          OUTDATED=$(find . -name "*.md" -type f \
+            ! -path "*/node_modules/*" \
+            ! -path "*/.git/*" \
+            ! -path "*/archive/*" \
+            -mtime +90 \
+            -exec stat -c '%n (last modified: %y)' {} \; 2>/dev/null || \
+            find . -name "*.md" -type f \
+            ! -path "*/node_modules/*" \
+            ! -path "*/.git/*" \
+            ! -path "*/archive/*" \
+            -mtime +90 \
+            -exec ls -l {} \;)
+
+          if [ -n "$OUTDATED" ]; then
+            echo "⚠️ 发现 $(echo "$OUTDATED" | wc -l) 个过时文档" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            echo "$OUTDATED" | head -20 >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ 所有文档保持更新" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Generate statistics
+        run: |
+          echo "## 文档统计" >> $GITHUB_STEP_SUMMARY
+          echo "- Markdown 文件: $(find . -name '*.md' ! -path '*/node_modules/*' ! -path '*/.git/*' | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "- JavaScript 文件: $(find . -name '*.js' ! -path '*/node_modules/*' ! -path '*/.git/*' | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "- Shell 脚本: $(find . -name '*.sh' ! -path '*/node_modules/*' ! -path '*/.git/*' | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "- 项目总大小: $(du -sh . | awk '{print $1}')" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload validation reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-reports-${{ env.VALIDATION_DATE }}
+          path: |
+            markdown-validation.log
+            link-validation.log
+            duplicate-detection.log
+          retention-days: 30
+
+      - name: Create issue for failures
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let body = '## 📋 Weekly Documentation Validation Failed\n\n';
+            body += `**Date:** ${new Date().toISOString()}\n\n`;
+
+            // 读取日志文件
+            if (fs.existsSync('markdown-validation.log')) {
+              body += '### Markdown Validation\n```\n';
+              body += fs.readFileSync('markdown-validation.log', 'utf8').slice(-1000);
+              body += '\n```\n\n';
+            }
+
+            if (fs.existsSync('link-validation.log')) {
+              body += '### Link Validation\n```\n';
+              body += fs.readFileSync('link-validation.log', 'utf8').slice(-1000);
+              body += '\n```\n\n';
+            }
+
+            body += '**Action:** Please review the validation reports and fix the issues.\n';
+            body += `**Workflow:** [${context.workflow}](${context.payload.repository.html_url}/actions/runs/${context.runId})`;
+
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📋 Weekly Validation Failed - ${new Date().toISOString().split('T')[0]}`,
+              body: body,
+              labels: ['documentation', 'automation', 'validation-failed']
+            });
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let comment = '## 📋 Documentation Validation Results\n\n';
+
+            // 读取验证结果
+            const markdownLog = fs.existsSync('markdown-validation.log')
+              ? fs.readFileSync('markdown-validation.log', 'utf8')
+              : '';
+            const linkLog = fs.existsSync('link-validation.log')
+              ? fs.readFileSync('link-validation.log', 'utf8')
+              : '';
+
+            // 统计结果
+            const markdownPassed = markdownLog.includes('✓ 所有文件验证通过') || markdownLog.includes('通过（有警告）');
+            const linkPassed = linkLog.includes('✅ 所有链接验证通过');
+
+            if (markdownPassed && linkPassed) {
+              comment += '✅ **All validations passed!**\n\n';
+            } else {
+              comment += '⚠️ **Some validations have issues:**\n\n';
+              if (!markdownPassed) comment += '- ❌ Markdown format validation\n';
+              if (!linkPassed) comment += '- ❌ Link validation\n';
+              comment += '\nPlease check the workflow logs for details.\n';
+            }
+
+            comment += `\n[View full report](${context.payload.repository.html_url}/actions/runs/${context.runId})`;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
+
+  test-error-cases:
+    name: Run Error Case Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'validation/error-tests/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: validation/error-tests
+        run: npm ci
+
+      - name: Run tests
+        working-directory: validation/error-tests
+        run: npm test -- --ci --coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-coverage
+          path: validation/error-tests/coverage/
+          retention-days: 30
+
+      - name: Comment test results on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let comment = '## 🧪 Error Case Test Results\n\n';
+
+            // 尝试读取测试结果（如果存在 JSON reporter）
+            try {
+              const coverageFile = 'validation/error-tests/coverage/coverage-summary.json';
+              if (fs.existsSync(coverageFile)) {
+                const coverage = JSON.parse(fs.readFileSync(coverageFile, 'utf8'));
+                const total = coverage.total;
+
+                comment += '### Coverage Summary\n';
+                comment += `- **Lines:** ${total.lines.pct}%\n`;
+                comment += `- **Statements:** ${total.statements.pct}%\n`;
+                comment += `- **Functions:** ${total.functions.pct}%\n`;
+                comment += `- **Branches:** ${total.branches.pct}%\n\n`;
+              }
+            } catch (e) {
+              comment += '_Coverage report not available_\n\n';
+            }
+
+            comment += `[View detailed report](${context.payload.repository.html_url}/actions/runs/${context.runId})`;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
