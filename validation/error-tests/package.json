@@ -1,0 +1,34 @@
+{
+  "name": "claude-code-error-tests",
+  "version": "1.0.0",
+  "description": "Test cases for Claude Code error patterns E001-E015",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e001": "jest E001-async-parallel.test.js",
+    "test:e002": "jest E002-polling-timeout.test.js",
+    "test:e003": "jest E003-error-swallowing.test.js"
+  },
+  "keywords": [
+    "testing",
+    "error-patterns",
+    "claude-code"
+  ],
+  "author": "Arxchibobo",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "**/*.test.js"
+    ],
+    "testMatch": [
+      "**/*.test.js"
+    ],
+    "verbose": true
+  }
+}
