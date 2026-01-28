@@ -4,15 +4,6 @@
 
 ---
 
-## 🤖 模型信息
-
-**你是 Claude Sonnet 4.5** (anthropic.claude-sonnet-4-5-20250929-v1:0)
-- 通过 AWS Bedrock Inference Profile 部署
-- 配备完整的工程化知识库（12 个核心文档，127 KB）
-- 支持 MCP、Skills、Plugins 等扩展能力
-
----
-
 ## 🎯 核心原则
 
 ### 工作模式
@@ -285,6 +276,95 @@ await kb.init();
 **自检**: 大文件或频繁访问的资源是否在启动时预加载？
 
 **权衡**: 启动慢一点（+100ms），响应快很多（-149ms），内存占用可接受（~120KB）
+
+---
+
+### E014: 跨平台路径处理未统一 | 🟡 中等 | 中频
+
+```typescript
+// ❌ 错误：直接使用原始路径
+const psCommand = `cd "${userProvidedPath}" && claude`;
+// Windows: E:\Bobo's Coding cache ✅
+// WSL: /mnt/e/Bobo's Coding cache ❌ （PowerShell 不认识）
+
+// ✅ 正确：统一路径转换层
+function normalizePath(path: string, targetEnv: 'windows' | 'wsl'): string {
+  if (targetEnv === 'windows' && path.startsWith('/mnt/')) {
+    // WSL → Windows
+    return path.replace(/^\/mnt\/([a-z])\//, (_, drive) => `${drive.toUpperCase()}:\\`);
+  }
+  if (targetEnv === 'wsl' && /^[A-Z]:\\/.test(path)) {
+    // Windows → WSL
+    return path.replace(/^([A-Z]):\\/, (_, drive) => `/mnt/${drive.toLowerCase()}/`);
+  }
+  return path;
+}
+
+// 使用
+const windowsCwd = normalizePath(userProvidedPath, 'windows');
+const psCommand = `cd "${windowsCwd}" && claude`;
+```
+
+**自检**:
+- 是否有路径转换的统一入口？
+- 是否考虑了所有路径格式（Windows/WSL/Unix/相对路径）？
+- 是否处理了特殊字符（空格/单引号）？
+
+**案例回顾**（2026-01-27）:
+- Vibecraft 项目在 WSL 中无法启动 Windows Terminal
+- 原因：WSL 路径 `/mnt/e/` 直接传给 PowerShell，无法识别
+- 修复：添加 `convertWindowsPathToWSL()` 和 `normalizePath()` 函数
+
+---
+
+### E015: Hook 系统未验证完整链路 | 🔴 严重 | 低频
+
+```typescript
+// ❌ 错误：只设置环境变量，未检查 Hook 安装
+process.env.VIBECRAFT_EVENTS_FILE = eventsFile;
+// Claude CLI 启动...
+// 结果：Claude Code 不调用 hook（因为 settings.json 未配置）
+
+// ✅ 正确：启动前验证完整链路
+async function validateEventCapture(): Promise<boolean> {
+  // 1. 检查 Hook 脚本安装
+  const hookPath = path.join(os.homedir(), '.vibecraft', 'hooks', 'vibecraft-hook.js');
+  if (!fs.existsSync(hookPath)) {
+    console.error("❌ Hook 脚本未安装，运行: npx vibecraft setup");
+    return false;
+  }
+
+  // 2. 检查 Claude settings.json 配置
+  const settingsPath = path.join(os.homedir(), '.claude', 'settings.json');
+  const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+  const hasHooks = settings.hooks && Object.keys(settings.hooks).length > 0;
+  if (!hasHooks) {
+    console.error("❌ Claude settings.json 未配置 hooks");
+    return false;
+  }
+
+  // 3. 检查环境变量
+  if (!process.env.VIBECRAFT_EVENTS_FILE) {
+    console.error("❌ 环境变量 VIBECRAFT_EVENTS_FILE 未设置");
+    return false;
+  }
+
+  console.log("✅ 事件捕获链路验证通过");
+  return true;
+}
+```
+
+**自检**:
+- 是否验证了每一层（注册 → 调用 → 执行 → 输出）？
+- 是否在启动时就暴露问题，而不是运行时？
+- 是否提供了清晰的修复指导？
+
+**案例回顾**（2026-01-27）:
+- Vibecraft 前端一直显示 "Waiting for activity"，无事件流
+- 第一次诊断：只修复了环境变量（Layer 2），Hook 未安装（Layer 1）
+- 第二次诊断：发现需要两层都修复
+  - Layer 1: `npx vibecraft setup` 安装 Hook 到 Claude Code
+  - Layer 2: 启动 Claude CLI 时设置 `VIBECRAFT_EVENTS_FILE` 环境变量
 
 ---
 
