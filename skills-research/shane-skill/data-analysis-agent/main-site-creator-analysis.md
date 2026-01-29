@@ -133,7 +133,7 @@ main_site_by_user_bot AS (
     WHERE t.energy - COALESCE(a.energy, 0) > 0
 )
 SELECT
-    m.bot_id,
+    CAST(m.bot_id AS CHAR) as bot_id,  -- 将 bot_id 转换为字符串，避免 JavaScript 精度丢失
     b.name as bot_name,
     SUM(m.main_energy) / 100 as total_cost_usd,
     SUM(CASE WHEN c.user_id IS NOT NULL THEN m.main_energy ELSE 0 END) / 100 as creator_cost_usd,

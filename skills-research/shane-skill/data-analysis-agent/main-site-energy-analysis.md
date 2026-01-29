@@ -129,7 +129,7 @@ main_site AS (
         )
 )
 SELECT
-    m.bot_id,
+    CAST(m.bot_id AS CHAR) as bot_id,  -- 将 bot_id 转换为字符串，避免 JavaScript 精度丢失
     b.name as bot_name,
     b.botType,
     SUM(m.energy) as total_energy,

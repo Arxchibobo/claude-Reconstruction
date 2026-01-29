@@ -321,7 +321,7 @@ LEFT JOIN attributed a ON o.user_id = a.user_id AND o.created_date = a.order_dat
 
 ```sql
 SELECT
-  bot_id,
+  CAST(bot_id AS CHAR) as bot_id,  -- 将 bot_id 转换为字符串，避免 JavaScript 精度丢失
   slug_id,
   MAX(bot_name) as bot_name,
   SUM(actual_energy_cost) / 100 as bot_cost
